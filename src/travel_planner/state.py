@@ -7,3 +7,4 @@ class TravelPlannerState(TypedDict, total=False):
     is_safe: bool
     requirements: dict
     final_response: str
+    rejection_reason: str
