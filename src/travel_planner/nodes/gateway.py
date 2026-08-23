@@ -1,6 +1,21 @@
 from travel_planner.state import TravelPlannerState
 
 
+TRAVEL_KEYWORDS = {
+    "travel",
+    "trip",
+    "vacation",
+    "holiday",
+    "flight",
+    "hotel",
+    "destination",
+    "itinerary",
+    "tour",
+    "visit",
+    "journey",
+}
+
+
 def input_gateway(state: TravelPlannerState) -> TravelPlannerState:
     request = state["user_request"].strip()
 
@@ -10,6 +25,16 @@ def input_gateway(state: TravelPlannerState) -> TravelPlannerState:
             "is_relevant": False,
             "is_safe": True,
             "rejection_reason": "Empty travel request.",
+        }
+
+    normalized_request = request.lower()
+
+    if not any(keyword in normalized_request for keyword in TRAVEL_KEYWORDS):
+        return {
+            **state,
+            "is_relevant": False,
+            "is_safe": True,
+            "rejection_reason": "Request does not appear to be travel-related.",
         }
 
     return {

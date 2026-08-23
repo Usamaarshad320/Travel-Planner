@@ -21,3 +21,17 @@ def test_empty_request_is_rejected():
     assert result["is_relevant"] is False
     assert result["rejection_reason"] == "Empty travel request."
     assert result["final_response"] is not None
+
+
+
+def test_non_travel_request_is_rejected():
+    graph = build_graph()
+
+    result = graph.invoke(
+        {"user_request": "Explain how photosynthesis works."}
+    )
+
+    assert result["is_relevant"] is False
+    assert result["rejection_reason"] == (
+        "Request does not appear to be travel-related."
+    )
