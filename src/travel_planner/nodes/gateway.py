@@ -1,4 +1,10 @@
 from travel_planner.state import TravelPlannerState
+from travel_planner.guardrails import semantic_guardrail
+
+
+
+
+
 
 
 TRAVEL_KEYWORDS = {
@@ -46,7 +52,6 @@ def check_prompt_injection(request: str) -> bool:
         for pattern in INJECTION_PATTERNS
     )
 
-
 def input_gateway(state: TravelPlannerState) -> TravelPlannerState:
     request = state["user_request"].strip()
 
@@ -76,6 +81,16 @@ def input_gateway(state: TravelPlannerState) -> TravelPlannerState:
             "rejection_reason": (
                 "Potential prompt injection detected."
             ),
+        }
+
+    semantic_result = semantic_guardrail(request)
+
+    if not semantic_result.is_relevant or not semantic_result.is_safe:
+        return {
+            **state,
+            "is_relevant": semantic_result.is_relevant,
+            "is_safe": semantic_result.is_safe,
+            "rejection_reason": semantic_result.reason,
         }
 
     return {
