@@ -21,6 +21,21 @@ TRAVEL_KEYWORDS = {
     "airport",
 }
 
+INJECTION_PATTERNS = {
+    "ignore previous instructions",
+    "ignore all previous instructions",
+    "disregard previous instructions",
+    "system prompt",
+    "reveal your instructions",
+    "reveal the system prompt",
+}
+
+
+
+
+
+
+
 def input_gateway(state: TravelPlannerState) -> TravelPlannerState:
     request = state["user_request"].strip()
 
@@ -41,7 +56,14 @@ def input_gateway(state: TravelPlannerState) -> TravelPlannerState:
             "is_safe": True,
             "rejection_reason": "Request does not appear to be travel-related.",
         }
-
+    for pattern in INJECTION_PATTERNS:
+        if pattern in normalized_request:
+            return {
+            **state,
+            "is_relevant": True,
+            "is_safe": False,
+            "rejection_reason": "Potential prompt injection detected.",
+        }
     return {
         **state,
         "is_relevant": True,
