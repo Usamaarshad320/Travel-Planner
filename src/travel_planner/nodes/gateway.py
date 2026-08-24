@@ -31,9 +31,20 @@ INJECTION_PATTERNS = {
 }
 
 
+def check_relevance(request: str) -> bool:
+    normalized_request = request.lower()
+    return any(
+        keyword in normalized_request
+        for keyword in TRAVEL_KEYWORDS
+    )
 
 
-
+def check_prompt_injection(request: str) -> bool:
+    normalized_request = request.lower()
+    return any(
+        pattern in normalized_request
+        for pattern in INJECTION_PATTERNS
+    )
 
 
 def input_gateway(state: TravelPlannerState) -> TravelPlannerState:
@@ -47,23 +58,26 @@ def input_gateway(state: TravelPlannerState) -> TravelPlannerState:
             "rejection_reason": "Empty travel request.",
         }
 
-    normalized_request = request.lower()
-
-    if not any(keyword in normalized_request for keyword in TRAVEL_KEYWORDS):
+    if not check_relevance(request):
         return {
             **state,
             "is_relevant": False,
             "is_safe": True,
-            "rejection_reason": "Request does not appear to be travel-related.",
+            "rejection_reason": (
+                "Request does not appear to be travel-related."
+            ),
         }
-    for pattern in INJECTION_PATTERNS:
-        if pattern in normalized_request:
-            return {
+
+    if check_prompt_injection(request):
+        return {
             **state,
             "is_relevant": True,
             "is_safe": False,
-            "rejection_reason": "Potential prompt injection detected.",
+            "rejection_reason": (
+                "Potential prompt injection detected."
+            ),
         }
+
     return {
         **state,
         "is_relevant": True,
