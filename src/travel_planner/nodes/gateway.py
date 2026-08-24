@@ -13,8 +13,13 @@ TRAVEL_KEYWORDS = {
     "tour",
     "visit",
     "journey",
+    "country",
+    "city",
+    "beach",
+    "museum",
+    "resort",
+    "airport",
 }
-
 
 def input_gateway(state: TravelPlannerState) -> TravelPlannerState:
     request = state["user_request"].strip()

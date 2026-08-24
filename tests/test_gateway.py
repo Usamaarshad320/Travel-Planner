@@ -35,3 +35,12 @@ def test_non_travel_request_is_rejected():
     assert result["rejection_reason"] == (
         "Request does not appear to be travel-related."
     )
+
+def test_common_travel_request_is_accepted():
+    graph = build_graph()
+
+    result = graph.invoke(
+        {"user_request": "I want to visit Istanbul for one week."}
+    )
+
+    assert result["is_relevant"] is True
