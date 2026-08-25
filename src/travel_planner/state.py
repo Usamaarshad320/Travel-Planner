@@ -9,3 +9,5 @@ class TravelPlannerState(TypedDict, total=False):
     final_response: str
     rejection_reason: str
     is_supported: bool
+    gateway_decision: Literal["accept", "reject"]
+    

@@ -76,6 +76,7 @@ def input_gateway(state: TravelPlannerState) -> TravelPlannerState:
             **state,
             "is_relevant": False,
             "is_safe": True,
+            "gateway_decision": "reject",
             "rejection_reason": "Empty travel request.",
         }
 
@@ -84,6 +85,7 @@ def input_gateway(state: TravelPlannerState) -> TravelPlannerState:
             **state,
             "is_relevant": False,
             "is_safe": True,
+            "gateway_decision": "reject",
             "rejection_reason": (
                 "Request does not appear to be travel-related."
             ),
@@ -94,6 +96,7 @@ def input_gateway(state: TravelPlannerState) -> TravelPlannerState:
             **state,
             "is_relevant": True,
             "is_safe": False,
+            "gateway_decision": "reject",
             "rejection_reason": (
                 "Potential prompt injection detected."
             ),
@@ -104,6 +107,7 @@ def input_gateway(state: TravelPlannerState) -> TravelPlannerState:
              **state,
              "is_relevant": True,
              "is_safe": True,
+             "gateway_decision": "reject",
              "is_supported": False,
              "rejection_reason": (
              "This request requires a capability "
@@ -125,6 +129,7 @@ def input_gateway(state: TravelPlannerState) -> TravelPlannerState:
                 **state,
                 "is_relevant": semantic_result.is_relevant,
                 "is_safe": semantic_result.is_safe,
+                "gateway_decision": "reject",
                 "rejection_reason": semantic_result.reason,
             }
 
@@ -133,4 +138,5 @@ def input_gateway(state: TravelPlannerState) -> TravelPlannerState:
         "is_relevant": True,
         "is_safe": True,
         "is_supported": True,
+        "gateway_decision": "accept",
     }
