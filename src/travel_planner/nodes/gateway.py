@@ -4,6 +4,15 @@ from travel_planner.guardrails import (
 )
 from travel_planner.state import TravelPlannerState
 
+from travel_planner.guardrails import (
+    check_capability,
+    needs_semantic_check,
+    semantic_guardrail,
+)
+
+
+
+
 
 TRAVEL_KEYWORDS = {
     "travel",
@@ -53,6 +62,12 @@ def check_prompt_injection(request: str) -> bool:
     )
 
 
+
+
+
+
+
+
 def input_gateway(state: TravelPlannerState) -> TravelPlannerState:
     request = state["user_request"].strip()
 
@@ -84,6 +99,24 @@ def input_gateway(state: TravelPlannerState) -> TravelPlannerState:
             ),
         }
 
+    if not check_capability(request):
+         return {
+             **state,
+             "is_relevant": True,
+             "is_safe": True,
+             "is_supported": False,
+             "rejection_reason": (
+             "This request requires a capability "
+             "that is not currently supported."
+             ),
+    }
+    
+
+
+
+
+
+
     if needs_semantic_check(request):
         semantic_result = semantic_guardrail(request)
 
@@ -99,4 +132,5 @@ def input_gateway(state: TravelPlannerState) -> TravelPlannerState:
         **state,
         "is_relevant": True,
         "is_safe": True,
+        "is_supported": True,
     }

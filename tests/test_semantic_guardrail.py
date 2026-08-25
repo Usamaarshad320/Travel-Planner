@@ -61,3 +61,19 @@ def test_detailed_request_needs_semantic_check():
     assert needs_semantic_check(
         "Plan a seven day family trip to Turkey within our budget."
     ) is True
+
+
+
+from travel_planner.guardrails import check_capability
+
+
+def test_supported_request():
+    assert check_capability(
+        "Plan a trip to Turkey."
+    ) is True
+
+
+def test_unsupported_booking_request():
+    assert check_capability(
+        "Book a flight to Istanbul."
+    ) is False

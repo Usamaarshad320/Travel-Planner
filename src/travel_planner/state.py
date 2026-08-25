@@ -8,3 +8,4 @@ class TravelPlannerState(TypedDict, total=False):
     requirements: dict
     final_response: str
     rejection_reason: str
+    is_supported: bool

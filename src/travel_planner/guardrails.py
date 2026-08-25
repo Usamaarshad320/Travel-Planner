@@ -24,3 +24,24 @@ User request:
 
 def needs_semantic_check(request: str) -> bool:
     return len(request.split()) > 5
+
+def check_capability(request: str) -> bool:
+    """
+    Determine whether the request is within the broad
+    capabilities of the travel planning application.
+
+    This is intentionally conservative for now.
+    """
+    unsupported_patterns = {
+        "book a flight",
+        "purchase a ticket",
+        "make a payment",
+        "send money",
+    }
+
+    normalized_request = request.lower()
+
+    return not any(
+        pattern in normalized_request
+        for pattern in unsupported_patterns
+    )
