@@ -1,14 +1,13 @@
 from travel_planner.llm import get_llm
 from travel_planner.schemas import GuardrailResult
 
-def semantic_guardrail(request: str, ) -> GuardrailResult:
 
+def semantic_guardrail(request: str) -> GuardrailResult:
     llm = get_llm()
 
     structured_llm = llm.with_structured_output(GuardrailResult)
 
     prompt = f"""
-
 Classify this user request for a travel planning application.
 
 Determine:
@@ -21,3 +20,7 @@ User request:
 """
 
     return structured_llm.invoke(prompt)
+
+
+def needs_semantic_check(request: str) -> bool:
+    return len(request.split()) > 5

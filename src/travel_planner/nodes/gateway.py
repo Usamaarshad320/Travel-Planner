@@ -1,10 +1,8 @@
+from travel_planner.guardrails import (
+    needs_semantic_check,
+    semantic_guardrail,
+)
 from travel_planner.state import TravelPlannerState
-from travel_planner.guardrails import semantic_guardrail
-
-
-
-
-
 
 
 TRAVEL_KEYWORDS = {
@@ -39,6 +37,7 @@ INJECTION_PATTERNS = {
 
 def check_relevance(request: str) -> bool:
     normalized_request = request.lower()
+
     return any(
         keyword in normalized_request
         for keyword in TRAVEL_KEYWORDS
@@ -47,10 +46,12 @@ def check_relevance(request: str) -> bool:
 
 def check_prompt_injection(request: str) -> bool:
     normalized_request = request.lower()
+
     return any(
         pattern in normalized_request
         for pattern in INJECTION_PATTERNS
     )
+
 
 def input_gateway(state: TravelPlannerState) -> TravelPlannerState:
     request = state["user_request"].strip()
@@ -83,15 +84,16 @@ def input_gateway(state: TravelPlannerState) -> TravelPlannerState:
             ),
         }
 
-    semantic_result = semantic_guardrail(request)
+    if needs_semantic_check(request):
+        semantic_result = semantic_guardrail(request)
 
-    if not semantic_result.is_relevant or not semantic_result.is_safe:
-        return {
-            **state,
-            "is_relevant": semantic_result.is_relevant,
-            "is_safe": semantic_result.is_safe,
-            "rejection_reason": semantic_result.reason,
-        }
+        if not semantic_result.is_relevant or not semantic_result.is_safe:
+            return {
+                **state,
+                "is_relevant": semantic_result.is_relevant,
+                "is_safe": semantic_result.is_safe,
+                "rejection_reason": semantic_result.reason,
+            }
 
     return {
         **state,
